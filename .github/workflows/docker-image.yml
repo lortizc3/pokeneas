@@ -2,27 +2,26 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
+
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKERHUB_USER}}
+        DOCKER_PASS: ${{secrets.DOCKERHUB_PASS}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASS
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag lortizc3/express-pokenea:latest
 
-      - name: Docker Login
-        env:
-          DOCKER_USER: ${{ secrets.DOCKERHUB_USER }}
-          DOCKER_PASS: ${{ secrets.DOCKERHUB_PASS }}
-        run: |
-          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-      - name: Build Docker Image
-        run: |
-          docker build . --file Dockerfile --tag lortizc3/express-pokenea:latest
-      - name: Push Docker Image
-        run: |
-          docker push lortizc3/express-pokenea:latest
+    - name: Docker Push
+      run: docker push lortizc3/express-pokenea
