@@ -19,7 +19,6 @@ app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 
     function configureApp(app) {
-        // Configuración del motor de plantillas EJS
         app.set('view engine', 'ejs');
         app.set('views', path.join(__dirname, 'views'));
     }
